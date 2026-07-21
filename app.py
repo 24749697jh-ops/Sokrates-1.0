@@ -47,6 +47,7 @@ def ensure_state() -> None:
         "task_text": "",
         "task_input": "",
         "reply_input": "",
+        "clear_reply_input_pending": False,
         "uploaded_name": None,
         "uploaded_bytes": None,
         "uploaded_mime": None,
@@ -176,7 +177,7 @@ ensure_state()
 st.markdown(
     """
     <div class="hero">
-      <h1>🧭 Sokrates 1.1</h1>
+      <h1>🧭 Sokrates 1.1.1</h1>
       <p><em>Ich begleite dich – denken musst du selbst.</em></p>
       <p>Verstehen → Planen → Rechnen → Prüfen</p>
     </div>
@@ -263,7 +264,6 @@ if not st.session_state.task_started:
             st.session_state.task_text = task
             st.session_state.messages = [{"role": "user", "content": task}]
             st.session_state.task_started = True
-            st.session_state.task_input = ""
             try:
                 st.session_state.messages.append(
                     {"role": "assistant", "content": get_answer()}
@@ -274,6 +274,10 @@ if not st.session_state.task_started:
                 st.error(f"Die Anfrage konnte nicht verarbeitet werden: {exc}")
 
 else:
+    if st.session_state.get("clear_reply_input_pending", False):
+        st.session_state.reply_input = ""
+        st.session_state.clear_reply_input_pending = False
+
     render_messages(st.session_state.messages)
 
     st.caption(f"Hilfestufe {st.session_state.help_level} von 4")
@@ -310,7 +314,7 @@ else:
     if reply:
         try:
             send_message(reply)
-            st.session_state.reply_input = ""
+            st.session_state.clear_reply_input_pending = True
             st.rerun()
         except Exception as exc:
             st.error(f"Die Anfrage konnte nicht verarbeitet werden: {exc}")

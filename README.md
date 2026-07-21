@@ -1,4 +1,4 @@
-# Sokrates 1.1 – Teacher Engine 2.0 (iPad Edition)
+# Sokrates 1.1.1 – Teacher Engine 2.0 (iPad Edition)
 
 Sokrates 1.1 erweitert vor allem den fachlich-didaktischen Unterbau.
 Die Oberfläche bleibt bewusst weitgehend unverändert.
@@ -54,3 +54,11 @@ Zusätzlich zu den bisherigen Dateien wird benötigt:
 - `misconception_engine.py`
 
 Diese Datei muss ebenfalls in das Hauptverzeichnis hochgeladen werden.
+
+
+## Fehlerbehebung in 1.1.1
+
+- Behebt den Streamlit-Fehler beim Start einer Aufgabe:
+  `st.session_state.task_input cannot be modified after the widget is instantiated`
+- Behebt denselben möglichen Fehler beim Leeren der Antwort-Eingabe.
+- Eingabefelder werden jetzt erst im nächsten Streamlit-Durchlauf sicher geleert.
