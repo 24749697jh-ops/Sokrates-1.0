@@ -153,14 +153,26 @@ def send_message(text: str) -> None:
     if not cleaned:
         return
 
-    latex = readable_to_latex(cleaned)
+    # Normaler Text bleibt normaler Text. Nur kurze, überwiegend mathematische
+    # Eingaben erhalten zusätzlich eine Formelvorschau.
+    math_symbols = set("=+-−·×:÷√^²³()[]/%παβγΔ≤≥≠")
+    symbol_count = sum(1 for char in cleaned if char in math_symbols)
+    word_count = len(cleaned.split())
+    looks_mathematical = symbol_count >= 1 and word_count <= 8
+
+    if looks_mathematical:
+        latex = readable_to_latex(cleaned)
+        user_content = (
+            f"Mein Rechenschritt lautet: {cleaned}\n\n"
+            f"Mathematisch dargestellt:\n$${latex}$$"
+        )
+    else:
+        user_content = cleaned
+
     st.session_state.messages.append(
         {
             "role": "user",
-            "content": (
-                f"Mein Gedanke oder Rechenschritt lautet: {cleaned}\n\n"
-                f"Mathematisch dargestellt:\n$${latex}$$"
-            ),
+            "content": user_content,
         }
     )
 
@@ -177,7 +189,7 @@ ensure_state()
 st.markdown(
     """
     <div class="hero">
-      <h1>🧭 Sokrates 1.1.1</h1>
+      <h1>🧭 Sokrates 1.1.2</h1>
       <p><em>Ich begleite dich – denken musst du selbst.</em></p>
       <p>Verstehen → Planen → Rechnen → Prüfen</p>
     </div>
@@ -262,7 +274,12 @@ if not st.session_state.task_started:
             st.error("Bitte gib eine Aufgabe ein oder lade eine Datei hoch.")
         else:
             st.session_state.task_text = task
-            st.session_state.messages = [{"role": "user", "content": task}]
+            st.session_state.messages = [
+                {
+                    "role": "user",
+                    "content": f"Aufgabe: {task}" if task else "Aufgabe aus der hochgeladenen Datei",
+                }
+            ]
             st.session_state.task_started = True
             try:
                 st.session_state.messages.append(

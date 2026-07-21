@@ -169,10 +169,18 @@ def render_math_editor(
     text = st.session_state.get(target_key, "").strip()
     if text:
         st.markdown("**Vorschau**")
-        try:
-            st.latex(readable_to_latex(text))
-        except Exception:
-            st.code(text)
+        math_symbols = set("=+-−·×:÷√^²³()[]/%παβγΔ≤≥≠")
+        symbol_count = sum(1 for char in text if char in math_symbols)
+        word_count = len(text.split())
+        looks_mathematical = symbol_count >= 1 and word_count <= 8
+
+        if looks_mathematical:
+            try:
+                st.latex(readable_to_latex(text))
+            except Exception:
+                st.code(text)
+        else:
+            st.markdown(text)
 
     c1, c2, c3 = st.columns(3)
     with c1:

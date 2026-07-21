@@ -1,4 +1,4 @@
-# Sokrates 1.1.1 – Teacher Engine 2.0 (iPad Edition)
+# Sokrates 1.1.2 – Teacher Engine 2.0 (iPad Edition)
 
 Sokrates 1.1 erweitert vor allem den fachlich-didaktischen Unterbau.
 Die Oberfläche bleibt bewusst weitgehend unverändert.
@@ -62,3 +62,14 @@ Diese Datei muss ebenfalls in das Hauptverzeichnis hochgeladen werden.
   `st.session_state.task_input cannot be modified after the widget is instantiated`
 - Behebt denselben möglichen Fehler beim Leeren der Antwort-Eingabe.
 - Eingabefelder werden jetzt erst im nächsten Streamlit-Durchlauf sicher geleert.
+
+
+## Fehlerbehebung in 1.1.2
+
+- Ganze Aufgabenstellungen werden nicht mehr als zusammengezogene LaTeX-Formel angezeigt.
+- Normaler Text bleibt normal lesbarer Text.
+- Nur kurze mathematische Eingaben erhalten eine Formelvorschau.
+- Halbkreisaufgaben werden jetzt ausdrücklich erkannt.
+- Eine Gleichung wie `A = 30 cm²` wird nicht mehr fälschlich als lineare Gleichung eingeordnet.
+- Die erste Frage bei einer Halbkreisfläche bezieht sich nun auf den Zusammenhang
+  zwischen Halbkreis und ganzem Kreis.

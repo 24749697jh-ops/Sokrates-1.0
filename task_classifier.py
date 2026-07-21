@@ -534,6 +534,36 @@ TASK_PROFILES: tuple[TaskProfile, ...] = (
         ),
     ),
     P(
+        "semicircle", "Halbkreis", "geometry", "Klasse 7–10",
+        (
+            "Wie hängt die Fläche des Halbkreises mit der Fläche eines ganzen Kreises zusammen?",
+            "Welche Kreisgröße ist gegeben und welche Größe soll bestimmt werden?",
+        ),
+        (
+            "Welche Formel verwendest du zunächst für die Fläche eines ganzen Kreises?",
+            "An welcher Stelle musst du berücksichtigen, dass nur ein Halbkreis vorliegt?",
+        ),
+        (
+            "Welche Gleichung entsteht aus $A_{Halbkreis}=\\frac{1}{2}\\pi r^2$ mit der gegebenen Fläche?",
+            "Welche Operation musst du zuerst rückgängig machen, damit $r^2$ allein steht?",
+        ),
+        (
+            "Ergibt die Hälfte der Kreisfläche mit deinem Radius wieder die vorgegebene Fläche?",
+            "Ist dein Radius als Länge und nicht als Flächengröße angegeben?",
+        ),
+        (
+            "Nutze zuerst $A_{Halbkreis}=\\frac{1}{2}\\pi r^2$.",
+            "Multipliziere beide Seiten mit 2.",
+            "Teile anschließend durch $\\pi$ und ziehe die Wurzel.",
+            "Setze den Radius zur Probe in die Halbkreisformel ein.",
+        ),
+        (
+            "Formel des ganzen Kreises ohne Halbierung verwendet",
+            "Radius vor dem Wurzelziehen nicht isoliert",
+            "Quadratzentimeter als Radiuseinheit übernommen",
+        ),
+    ),
+    P(
         "circle_area_circumference", "Kreis – Fläche oder Umfang", "geometry", "Klasse 7–10",
         (
             "Ist die Fläche oder der Umfang des Kreises gesucht?",
@@ -1079,7 +1109,7 @@ GENERAL_PROFILE = P(
 
 
 PATTERNS: dict[str, tuple[tuple[str, int], ...]] = {
-    "linear_equation": ((r"\bx\b[^=\n]*=", 3), (r"=\s*[-+]?\d", 1), (r"\b(löse|bestimme)\b.*\bx\b", 3)),
+    "linear_equation": ((r"\bx\b[^=\n]*=", 4), (r"=\s*[^\n]*\bx\b", 4), (r"\b(löse|bestimme)\b.*\bx\b", 4)),
     "equation_with_parentheses": ((r"\d+\s*\([^)]*x[^)]*\)", 4), (r"\([^)]*x[^)]*\)\s*=", 3)),
     "linear_system": ((r"\bgleichungssystem\b", 6), (r"\b(lgs|einsetzungsverfahren|additionsverfahren|gleichsetzungsverfahren)\b", 6), (r"\bx.*y.*=", 2)),
     "quadratic_equation": ((r"\bx\s*[²^]2\b", 4), (r"\bquadratische gleichung\b", 6), (r"\bx\^2\b", 4)),
@@ -1096,7 +1126,8 @@ PATTERNS: dict[str, tuple[tuple[str, int], ...]] = {
     "rectangle_area": ((r"\brechteck\b", 4), (r"\b(länge|breite)\b.*\bfläche", 4)),
     "triangle_area": ((r"\bdreieck\b.*\b(fläch|höhe|grundseite)", 6),),
     "trapezoid_area": ((r"\btrapez\b", 7),),
-    "circle_area_circumference": ((r"\bkreis\b.*\b(fläch|umfang|radius|durchmesser)", 5),),
+    "semicircle": ((r"\bhalbkreis(?:es|en|e|s)?\b", 10), (r"\bhalbkreis", 9)),
+    "circle_area_circumference": ((r"\b(?:kreis|halbkreis|viertelkreis|kreisfläche|kreisumfang)\w*\b.*\b(fläch|umfang|radius|durchmesser)", 6),),
     "circle_sector": ((r"\b(kreisausschnitt|sektor|kreisbogen|mittelpunktswinkel)\b", 8),),
     "pythagoras": ((r"\b(pythagoras|hypotenuse|rechtwinklig)\b", 7),),
     "similarity": ((r"\b(strahlensatz|ähnlich|maßstab)\b", 6),),
