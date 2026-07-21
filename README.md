@@ -1,4 +1,4 @@
-# Sokrates 1.1.2 – Teacher Engine 2.0 (iPad Edition)
+# Sokrates 1.1.3 – Teacher Engine 2.0 (iPad Edition)
 
 Sokrates 1.1 erweitert vor allem den fachlich-didaktischen Unterbau.
 Die Oberfläche bleibt bewusst weitgehend unverändert.
@@ -73,3 +73,14 @@ Diese Datei muss ebenfalls in das Hauptverzeichnis hochgeladen werden.
 - Eine Gleichung wie `A = 30 cm²` wird nicht mehr fälschlich als lineare Gleichung eingeordnet.
 - Die erste Frage bei einer Halbkreisfläche bezieht sich nun auf den Zusammenhang
   zwischen Halbkreis und ganzem Kreis.
+
+
+## Fehlerbehebung in 1.1.3
+
+- Behebt das Löschen der gesamten Eingabe beim Antippen von `²`, `³`,
+  Wurzeln, griechischen Buchstaben oder Operatoren auf dem iPad.
+- Die Tastatur verwendet jetzt den aktuell sichtbaren Text aus demselben
+  Streamlit-Durchlauf.
+- Änderungen werden sicher vor dem erneuten Erzeugen des Eingabefeldes
+  übernommen.
+- Rücktaste, Löschen und Formel-Builder verwenden dieselbe robuste Methode.
