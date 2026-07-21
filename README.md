@@ -1,4 +1,4 @@
-# Sokrates 1.1.3 – Teacher Engine 2.0 (iPad Edition)
+# Sokrates 1.1.4 – Teacher Engine 2.0 (iPad Edition)
 
 Sokrates 1.1 erweitert vor allem den fachlich-didaktischen Unterbau.
 Die Oberfläche bleibt bewusst weitgehend unverändert.
@@ -84,3 +84,15 @@ Diese Datei muss ebenfalls in das Hauptverzeichnis hochgeladen werden.
 - Änderungen werden sicher vor dem erneuten Erzeugen des Eingabefeldes
   übernommen.
 - Rücktaste, Löschen und Formel-Builder verwenden dieselbe robuste Methode.
+
+
+## Korrekturen in 1.1.4
+
+- Die normale Texteingabe wird von der Mathematik-Tastatur nicht mehr verändert.
+- Handgeschriebener beziehungsweise normal getippter Text bleibt auf dem iPad erhalten.
+- Mathematische Tastatureingaben erscheinen in einer eigenen Ergänzungszeile.
+- Beim Absenden werden Text und mathematische Ergänzung zusammengeführt.
+- Der Aufgabentyp bleibt an die ursprüngliche Aufgabe gebunden und kann nicht
+  durch spätere Schülerantworten versehentlich wechseln.
+- Die allererste Lehrerfrage wird direkt von der Teacher Engine erzeugt und
+  nicht mehr frei vom Sprachmodell formuliert.

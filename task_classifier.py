@@ -1152,12 +1152,14 @@ def _score(profile: TaskProfile, text: str) -> int:
 
 
 def classify_task(task_text: str, messages: list[dict]) -> TaskProfile:
+    # The original task determines the mathematical topic. Later student
+    # answers must not accidentally reclassify the whole problem.
     conversation = " ".join(
         str(m.get("content", ""))
         for m in messages
         if m.get("role") == "user"
     )
-    text = f"{task_text}\n{conversation}".lower().strip()
+    text = (task_text or conversation).lower().strip()
 
     ranked = sorted(
         ((profile, _score(profile, text)) for profile in TASK_PROFILES),
@@ -1174,7 +1176,7 @@ def classifier_debug(task_text: str, messages: list[dict]) -> list[tuple[str, in
         for m in messages
         if m.get("role") == "user"
     )
-    text = f"{task_text}\n{conversation}".lower().strip()
+    text = (task_text or conversation).lower().strip()
     ranked = sorted(
         ((profile.label, _score(profile, text)) for profile in TASK_PROFILES),
         key=lambda item: item[1],

@@ -48,6 +48,7 @@ def ensure_state() -> None:
         "task_input": "",
         "reply_input": "",
         "clear_reply_input_pending": False,
+        "clear_reply_math_pending": False,
         "uploaded_name": None,
         "uploaded_bytes": None,
         "uploaded_mime": None,
@@ -189,7 +190,7 @@ ensure_state()
 st.markdown(
     """
     <div class="hero">
-      <h1>🧭 Sokrates 1.1.3</h1>
+      <h1>🧭 Sokrates 1.1.4</h1>
       <p><em>Ich begleite dich – denken musst du selbst.</em></p>
       <p>Verstehen → Planen → Rechnen → Prüfen</p>
     </div>
@@ -281,9 +282,18 @@ if not st.session_state.task_started:
                 }
             ]
             st.session_state.task_started = True
+            st.session_state.task_input_math = ""
             try:
+                # The first question comes directly from the Teacher Engine.
+                # This prevents the language model from drifting to another topic.
                 st.session_state.messages.append(
-                    {"role": "assistant", "content": get_answer()}
+                    {
+                        "role": "assistant",
+                        "content": fallback_question(
+                            st.session_state.task_text,
+                            st.session_state.messages,
+                        ),
+                    }
                 )
                 st.rerun()
             except Exception as exc:
@@ -294,6 +304,9 @@ else:
     if st.session_state.get("clear_reply_input_pending", False):
         st.session_state.reply_input = ""
         st.session_state.clear_reply_input_pending = False
+    if st.session_state.get("clear_reply_math_pending", False):
+        st.session_state.reply_input_math = ""
+        st.session_state.clear_reply_math_pending = False
 
     render_messages(st.session_state.messages)
 
@@ -332,6 +345,7 @@ else:
         try:
             send_message(reply)
             st.session_state.clear_reply_input_pending = True
+            st.session_state.clear_reply_math_pending = True
             st.rerun()
         except Exception as exc:
             st.error(f"Die Anfrage konnte nicht verarbeitet werden: {exc}")

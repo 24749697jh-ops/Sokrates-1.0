@@ -58,37 +58,29 @@ def readable_to_latex(text: str) -> str:
     return result
 
 
-def _apply_pending_change(target_key: str) -> None:
-    """Apply keyboard changes before the text-area widget is created."""
-    pending_key = f"{target_key}_pending_value"
-    if pending_key in st.session_state:
-        st.session_state[target_key] = st.session_state.pop(pending_key)
+def _append_math(buffer_key: str, value: str) -> None:
+    st.session_state[buffer_key] = st.session_state.get(buffer_key, "") + value
 
 
-def _queue_value(target_key: str, value: str) -> None:
-    """Store a new value for the next Streamlit run."""
-    st.session_state[f"{target_key}_pending_value"] = value
-    st.rerun()
+def _delete_math(buffer_key: str) -> None:
+    st.session_state[buffer_key] = st.session_state.get(buffer_key, "")[:-1]
 
 
-def _render_key_row(
-    keys: tuple[tuple[str, str], ...],
-    prefix: str,
-    target_key: str,
-    current_text: str,
-    columns: int = 8,
-) -> None:
+def _clear_math(buffer_key: str) -> None:
+    st.session_state[buffer_key] = ""
+
+
+def _key_row(keys, prefix: str, buffer_key: str, columns: int = 8) -> None:
     cols = st.columns(columns)
     for index, (label, value) in enumerate(keys):
         with cols[index % columns]:
-            if st.button(
+            st.button(
                 label,
-                key=f"{prefix}_{target_key}_{index}",
+                key=f"{prefix}_{buffer_key}_{index}",
                 use_container_width=True,
-            ):
-                # Use the value returned by the text area in this exact run.
-                # This preserves freshly typed text on iPad before adding a symbol.
-                _queue_value(target_key, current_text + value)
+                on_click=_append_math,
+                args=(buffer_key, value),
+            )
 
 
 def render_math_editor(
@@ -97,78 +89,69 @@ def render_math_editor(
     placeholder: str,
     send_label: str,
 ) -> str | None:
-    _apply_pending_change(target_key)
+    """
+    The ordinary text field is never changed by a keypad button.
+    This prevents iPad/Safari from losing freshly typed text during reruns.
+    Mathematical symbols are collected in a separate buffer and combined on send.
+    """
+    buffer_key = f"{target_key}_math"
+    if buffer_key not in st.session_state:
+        st.session_state[buffer_key] = ""
 
     st.markdown(f"### {label}")
-    current_text = st.text_area(
+    manual_text = st.text_area(
         label,
         key=target_key,
-        height=105,
+        height=115,
         placeholder=placeholder,
         label_visibility="collapsed",
     )
 
-    _render_key_row(QUICK_KEYS, "quick", target_key, current_text)
-    _render_key_row(OPERATOR_KEYS, "operator", target_key, current_text)
+    st.caption("Mathematische Ergänzung")
+    math_buffer = st.text_input(
+        "Mathematische Ergänzung",
+        key=buffer_key,
+        placeholder="Hier erscheinen Zeichen aus der Mathematik-Tastatur.",
+        label_visibility="collapsed",
+    )
+
+    _key_row(QUICK_KEYS, "quick", buffer_key)
+    _key_row(OPERATOR_KEYS, "operator", buffer_key)
 
     with st.expander("Weitere Zeichen und Formelvorlagen", expanded=False):
         sign_tab, builder_tab = st.tabs(("Zeichen", "Formel-Builder"))
 
         with sign_tab:
-            _render_key_row(
-                MORE_KEYS,
-                "more",
-                target_key,
-                current_text,
-                columns=4,
-            )
+            _key_row(MORE_KEYS, "more", buffer_key, columns=4)
 
         with builder_tab:
             st.markdown("**Bruch**")
             c1, c2 = st.columns(2)
             with c1:
-                numerator = st.text_input(
-                    "Zähler",
-                    key=f"{target_key}_numerator",
-                )
+                numerator = st.text_input("Zähler", key=f"{target_key}_numerator")
             with c2:
-                denominator = st.text_input(
-                    "Nenner",
-                    key=f"{target_key}_denominator",
-                )
+                denominator = st.text_input("Nenner", key=f"{target_key}_denominator")
             if st.button(
                 "Bruch einsetzen",
                 key=f"{target_key}_fraction",
                 use_container_width=True,
-            ):
-                if numerator.strip() and denominator.strip():
-                    _queue_value(
-                        target_key,
-                        current_text + f"({numerator.strip()})/({denominator.strip()})",
-                    )
+            ) and numerator.strip() and denominator.strip():
+                _append_math(buffer_key, f"({numerator.strip()})/({denominator.strip()})")
+                st.rerun()
 
             st.markdown("**Potenz**")
             c1, c2 = st.columns(2)
             with c1:
-                base = st.text_input(
-                    "Basis",
-                    key=f"{target_key}_base",
-                )
+                base = st.text_input("Basis", key=f"{target_key}_base")
             with c2:
-                exponent = st.text_input(
-                    "Exponent",
-                    key=f"{target_key}_exponent",
-                )
+                exponent = st.text_input("Exponent", key=f"{target_key}_exponent")
             if st.button(
                 "Potenz einsetzen",
                 key=f"{target_key}_power",
                 use_container_width=True,
-            ):
-                if base.strip() and exponent.strip():
-                    _queue_value(
-                        target_key,
-                        current_text + f"({base.strip()})^({exponent.strip()})",
-                    )
+            ) and base.strip() and exponent.strip():
+                _append_math(buffer_key, f"({base.strip()})^({exponent.strip()})")
+                st.rerun()
 
             st.markdown("**Wurzel**")
             root_value = st.text_input(
@@ -179,28 +162,17 @@ def render_math_editor(
                 "Wurzel einsetzen",
                 key=f"{target_key}_root_button",
                 use_container_width=True,
-            ):
-                if root_value.strip():
-                    _queue_value(
-                        target_key,
-                        current_text + f"√({root_value.strip()})",
-                    )
+            ) and root_value.strip():
+                _append_math(buffer_key, f"√({root_value.strip()})")
+                st.rerun()
 
-    text = current_text.strip()
-    if text:
+    combined = " ".join(
+        part for part in (manual_text.strip(), math_buffer.strip()) if part
+    ).strip()
+
+    if combined:
         st.markdown("**Vorschau**")
-        math_symbols = set("=+-−·×:÷√^²³()[]/%παβγΔ≤≥≠")
-        symbol_count = sum(1 for char in text if char in math_symbols)
-        word_count = len(text.split())
-        looks_mathematical = symbol_count >= 1 and word_count <= 8
-
-        if looks_mathematical:
-            try:
-                st.latex(readable_to_latex(text))
-            except Exception:
-                st.code(text)
-        else:
-            st.markdown(text)
+        st.markdown(combined)
 
     c1, c2, c3 = st.columns(3)
     with c1:
@@ -208,26 +180,28 @@ def render_math_editor(
             send_label,
             type="primary",
             use_container_width=True,
-            disabled=not bool(text),
+            disabled=not bool(combined),
             key=f"{target_key}_send",
         )
     with c2:
-        if st.button(
-            "⌫",
+        st.button(
+            "⌫ Mathe",
             use_container_width=True,
-            disabled=not bool(current_text),
-            key=f"{target_key}_delete",
-        ):
-            _queue_value(target_key, current_text[:-1])
+            disabled=not bool(math_buffer),
+            key=f"{target_key}_delete_math",
+            on_click=_delete_math,
+            args=(buffer_key,),
+        )
     with c3:
-        if st.button(
-            "Löschen",
+        st.button(
+            "Mathe löschen",
             use_container_width=True,
-            disabled=not bool(current_text),
-            key=f"{target_key}_clear",
-        ):
-            _queue_value(target_key, "")
+            disabled=not bool(math_buffer),
+            key=f"{target_key}_clear_math",
+            on_click=_clear_math,
+            args=(buffer_key,),
+        )
 
     if send:
-        return current_text.strip()
+        return combined
     return None
