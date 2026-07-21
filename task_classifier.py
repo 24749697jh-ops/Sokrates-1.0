@@ -536,8 +536,8 @@ TASK_PROFILES: tuple[TaskProfile, ...] = (
     P(
         "semicircle", "Halbkreis", "geometry", "Klasse 7–10",
         (
-            "Wie hängt die Fläche des Halbkreises mit der Fläche eines ganzen Kreises zusammen?",
-            "Welche Kreisgröße ist gegeben und welche Größe soll bestimmt werden?",
+            "Gegeben ist die Fläche eines Halbkreises. Welche Größe soll bestimmt werden, und was bedeutet dabei das Wort Halbkreis?",
+            "Welche Information liefert dir die Angabe Halbkreis im Vergleich zu einem ganzen Kreis?",
         ),
         (
             "Welche Formel verwendest du zunächst für die Fläche eines ganzen Kreises?",

@@ -89,10 +89,17 @@ Verbindliche Regeln:
 
 
 def fallback_question(task_text: str, messages: list[dict]) -> str:
-    text = (task_text or '').lower()
-    if 'halbkreis' in text:
-        return 'Wie hängt die Fläche eines Halbkreises mit der Fläche eines ganzen Kreises zusammen?'
     profile = classify_task(task_text, messages)
+
+    # Solange noch keine echte Schülerantwort vorliegt, beginnt Sokrates
+    # verbindlich mit dem Verstehen der Aufgabe.
+    student_replies = [
+        m for m in messages[1:]
+        if m.get("role") == "user"
+    ]
+    if not student_replies:
+        return profile.opening_questions[0]
+
     phase = infer_phase(messages)
     assistant_count = len([m for m in messages if m.get("role") == "assistant"])
     return phase_question(profile, phase, assistant_count)

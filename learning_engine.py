@@ -21,18 +21,26 @@ def last_user_text(messages: list[dict]) -> str:
 
 
 def infer_phase(messages: list[dict]) -> str:
-    recent = " ".join(
+    # Die erste Nutzernachricht ist die Aufgabenstellung. Sie enthält oft
+    # Gleichheitszeichen, Zahlen oder Formeln und darf deshalb nicht als
+    # bereits begonnener Rechenschritt gewertet werden.
+    student_messages = [
         str(m.get("content", "")).lower()
-        for m in messages[-8:]
+        for m in messages[1:]
         if m.get("role") == "user"
-    )
+    ]
+
+    if not student_messages:
+        return "VERSTEHEN"
+
+    recent = " ".join(student_messages[-6:])
 
     if any(word in recent for word in CHECKING):
         return "PRÜFEN"
-    if any(word in recent for word in CALCULATION):
-        return "RECHNEN"
     if any(word in recent for word in ("formel", "plan", "strategie", "ansatz", "ich würde")):
         return "PLANEN"
+    if any(word in recent for word in CALCULATION):
+        return "RECHNEN"
     return "VERSTEHEN"
 
 

@@ -190,14 +190,14 @@ ensure_state()
 st.markdown(
     """
     <div class="hero">
-      <h1>🧭 Sokrates 1.1.5</h1>
+      <h1>🧭 Sokrates 1.1.6</h1>
       <p><em>Ich begleite dich – denken musst du selbst.</em></p>
       <p>Verstehen → Planen → Rechnen → Prüfen</p>
     </div>
     """,
     unsafe_allow_html=True,
 )
-st.caption("Installierte Version: 1.1.5")
+st.caption("Installierte Version: 1.1.6")
 
 api_key = os.getenv("OPENAI_API_KEY")
 
