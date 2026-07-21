@@ -176,7 +176,7 @@ ensure_state()
 st.markdown(
     """
     <div class="hero">
-      <h1>🧭 Sokrates 1.0</h1>
+      <h1>🧭 Sokrates 1.1</h1>
       <p><em>Ich begleite dich – denken musst du selbst.</em></p>
       <p>Verstehen → Planen → Rechnen → Prüfen</p>
     </div>

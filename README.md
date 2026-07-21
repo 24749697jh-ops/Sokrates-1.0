@@ -1,33 +1,56 @@
-# Sokrates 1.0 – iPad Edition
+# Sokrates 1.1 – Teacher Engine 2.0 (iPad Edition)
 
-Diese Ausgabe benötigt keine Unterordner. Alle Dateien werden direkt in das
-Hauptverzeichnis des GitHub-Repositories hochgeladen.
+Sokrates 1.1 erweitert vor allem den fachlich-didaktischen Unterbau.
+Die Oberfläche bleibt bewusst weitgehend unverändert.
 
-## Vorgehen auf GitHub
+## Neu in 1.1
 
-1. Lösche die irrtümlich angelegten Dateien `engine`, `formulas` und `ui`.
-2. Entpacke `sokrates_1_0_ipad.zip` in der Dateien-App.
-3. Öffne auf GitHub **Add file → Upload files**.
-4. Wähle alle Dateien aus dem entpackten Ordner aus.
-5. Lade sie direkt in das Hauptverzeichnis hoch und bestätige mit
-   **Commit changes**.
-6. Als Streamlit-Startdatei verwendest du `app.py`.
+- deutlich erweiterte Erkennung mathematischer Aufgabentypen
+- rund 30 konkret ausgearbeitete Aufgabentypen
+- gewichtete Mustererkennung statt einfacher Stichwortsuche
+- Schülerzustände:
+  - kurze Bestätigung
+  - Unsicherheit
+  - begründete Erklärung
+  - Rechenschritt
+  - allgemeine Erklärung
+- automatische Erkennung erster typischer Denkfehler
+- präzisere Einstiegs-, Planungs-, Rechen- und Prüfungsfragen
+- erweiterte Formelsammlung
+- Hilfestufen bleiben erhalten
 
-## Enthaltene Dateien
+## Neue Themenbereiche
 
-- app.py
-- config.py
-- requirements.txt
-- engine_models.py
-- task_classifier.py
-- learning_engine.py
-- teacher_engine.py
-- formula_library.py
-- chat_ui.py
-- formula_sidebar.py
-- math_editor.py
-- theme.py
+- lineare und quadratische Gleichungen
+- Klammergleichungen und Gleichungssysteme
+- pq-Formel und binomische Formeln
+- Potenzen, Wurzeln und Logarithmen
+- Bruchrechnung
+- Prozent- und Zinsrechnung
+- Dreisatz
+- Flächen, Kreis, Pythagoras und Ähnlichkeit
+- Prisma, Zylinder und Kegel
+- lineare und quadratische Funktionen
+- Ableitungen und Integrale
+- Trigonometrie
+- Statistik
+- Baumdiagramme und Kombinatorik
 
-Die Funktionen entsprechen Sokrates 1.0, einschließlich mathematischer
-Tastatur bei der ersten Eingabe, Teacher Engine, Formelsammlung,
-GoodNotes-Zwischenablage und Hilfestufen.
+## Installation auf dem iPad
+
+Alle Dateien liegen im Hauptverzeichnis.
+
+1. ZIP-Datei entpacken.
+2. Auf GitHub im Repository **Add file → Upload files** öffnen.
+3. Alle Dateien auswählen.
+4. Gleichnamige Dateien ersetzen.
+5. **Commit changes** bestätigen.
+6. Streamlit startet nach dem GitHub-Commit normalerweise automatisch neu.
+
+## Neue Datei
+
+Zusätzlich zu den bisherigen Dateien wird benötigt:
+
+- `misconception_engine.py`
+
+Diese Datei muss ebenfalls in das Hauptverzeichnis hochgeladen werden.
