@@ -190,13 +190,14 @@ ensure_state()
 st.markdown(
     """
     <div class="hero">
-      <h1>🧭 Sokrates 1.1.4</h1>
+      <h1>🧭 Sokrates 1.1.5</h1>
       <p><em>Ich begleite dich – denken musst du selbst.</em></p>
       <p>Verstehen → Planen → Rechnen → Prüfen</p>
     </div>
     """,
     unsafe_allow_html=True,
 )
+st.caption("Installierte Version: 1.1.5")
 
 api_key = os.getenv("OPENAI_API_KEY")
 
@@ -301,6 +302,16 @@ if not st.session_state.task_started:
                 st.error(f"Die Anfrage konnte nicht verarbeitet werden: {exc}")
 
 else:
+    with st.container(border=True):
+        st.markdown("### 📌 Deine Aufgabe")
+        if st.session_state.task_text:
+            st.markdown(st.session_state.task_text)
+        elif st.session_state.uploaded_name:
+            st.markdown(f"Aufgabe aus Datei: **{st.session_state.uploaded_name}**")
+        else:
+            st.markdown("Aufgabe aus der eingefügten Abbildung")
+        st.caption("Diese Aufgabenstellung bleibt während der gesamten Bearbeitung sichtbar.")
+
     if st.session_state.get("clear_reply_input_pending", False):
         st.session_state.reply_input = ""
         st.session_state.clear_reply_input_pending = False

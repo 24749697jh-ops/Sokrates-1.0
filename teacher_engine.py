@@ -89,6 +89,9 @@ Verbindliche Regeln:
 
 
 def fallback_question(task_text: str, messages: list[dict]) -> str:
+    text = (task_text or '').lower()
+    if 'halbkreis' in text:
+        return 'Wie hängt die Fläche eines Halbkreises mit der Fläche eines ganzen Kreises zusammen?'
     profile = classify_task(task_text, messages)
     phase = infer_phase(messages)
     assistant_count = len([m for m in messages if m.get("role") == "assistant"])
@@ -96,4 +99,7 @@ def fallback_question(task_text: str, messages: list[dict]) -> str:
 
 
 def topic_key_for(task_text: str, messages: list[dict]) -> str:
+    text = (task_text or '').lower()
+    if any(word in text for word in ('halbkreis', 'kreis', 'radius', 'durchmesser')):
+        return 'geometry'
     return classify_task(task_text, messages).topic_key

@@ -29,7 +29,6 @@ MORE_KEYS = (
 
 def readable_to_latex(text: str) -> str:
     result = text.strip()
-
     previous = None
     while previous != result:
         previous = result
@@ -38,39 +37,31 @@ def readable_to_latex(text: str) -> str:
         result = re.sub(r"√\(([^()]*)\)", r"\\sqrt{\1}", result)
 
     for old, new in (
-        ("·", r"\cdot "),
-        ("−", "-"),
-        ("≠", r"\neq "),
-        ("≈", r"\approx "),
-        ("≤", r"\le "),
-        ("≥", r"\ge "),
-        ("±", r"\pm "),
-        ("²", "^2"),
-        ("³", "^3"),
-        ("°", r"^\circ"),
-        ("ₛ", "_s"),
+        ("·", r"\cdot "), ("−", "-"), ("≠", r"\neq "),
+        ("≈", r"\approx "), ("≤", r"\le "), ("≥", r"\ge "),
+        ("±", r"\pm "), ("²", "^2"), ("³", "^3"),
+        ("°", r"^\circ"), ("ₛ", "_s"),
     ):
         result = result.replace(old, new)
 
     for symbol, latex in GREEK_MAP.items():
         result = result.replace(symbol, latex + " ")
-
     return result
 
 
-def _append_math(buffer_key: str, value: str) -> None:
+def _append(buffer_key: str, value: str) -> None:
     st.session_state[buffer_key] = st.session_state.get(buffer_key, "") + value
 
 
-def _delete_math(buffer_key: str) -> None:
+def _delete(buffer_key: str) -> None:
     st.session_state[buffer_key] = st.session_state.get(buffer_key, "")[:-1]
 
 
-def _clear_math(buffer_key: str) -> None:
+def _clear(buffer_key: str) -> None:
     st.session_state[buffer_key] = ""
 
 
-def _key_row(keys, prefix: str, buffer_key: str, columns: int = 8) -> None:
+def _row(keys, prefix: str, buffer_key: str, columns: int = 8) -> None:
     cols = st.columns(columns)
     for index, (label, value) in enumerate(keys):
         with cols[index % columns]:
@@ -78,7 +69,7 @@ def _key_row(keys, prefix: str, buffer_key: str, columns: int = 8) -> None:
                 label,
                 key=f"{prefix}_{buffer_key}_{index}",
                 use_container_width=True,
-                on_click=_append_math,
+                on_click=_append,
                 args=(buffer_key, value),
             )
 
@@ -89,14 +80,8 @@ def render_math_editor(
     placeholder: str,
     send_label: str,
 ) -> str | None:
-    """
-    The ordinary text field is never changed by a keypad button.
-    This prevents iPad/Safari from losing freshly typed text during reruns.
-    Mathematical symbols are collected in a separate buffer and combined on send.
-    """
     buffer_key = f"{target_key}_math"
-    if buffer_key not in st.session_state:
-        st.session_state[buffer_key] = ""
+    st.session_state.setdefault(buffer_key, "")
 
     st.markdown(f"### {label}")
     manual_text = st.text_area(
@@ -107,67 +92,22 @@ def render_math_editor(
         label_visibility="collapsed",
     )
 
-    st.caption("Mathematische Ergänzung")
-    math_buffer = st.text_input(
-        "Mathematische Ergänzung",
+    st.caption("Mathematische Zeichen")
+    math_text = st.text_input(
+        "Mathematische Zeichen",
         key=buffer_key,
-        placeholder="Hier erscheinen Zeichen aus der Mathematik-Tastatur.",
+        placeholder="Zeichen aus der Tastatur erscheinen hier.",
         label_visibility="collapsed",
     )
 
-    _key_row(QUICK_KEYS, "quick", buffer_key)
-    _key_row(OPERATOR_KEYS, "operator", buffer_key)
+    _row(QUICK_KEYS, "quick", buffer_key)
+    _row(OPERATOR_KEYS, "operator", buffer_key)
 
     with st.expander("Weitere Zeichen und Formelvorlagen", expanded=False):
-        sign_tab, builder_tab = st.tabs(("Zeichen", "Formel-Builder"))
-
-        with sign_tab:
-            _key_row(MORE_KEYS, "more", buffer_key, columns=4)
-
-        with builder_tab:
-            st.markdown("**Bruch**")
-            c1, c2 = st.columns(2)
-            with c1:
-                numerator = st.text_input("Zähler", key=f"{target_key}_numerator")
-            with c2:
-                denominator = st.text_input("Nenner", key=f"{target_key}_denominator")
-            if st.button(
-                "Bruch einsetzen",
-                key=f"{target_key}_fraction",
-                use_container_width=True,
-            ) and numerator.strip() and denominator.strip():
-                _append_math(buffer_key, f"({numerator.strip()})/({denominator.strip()})")
-                st.rerun()
-
-            st.markdown("**Potenz**")
-            c1, c2 = st.columns(2)
-            with c1:
-                base = st.text_input("Basis", key=f"{target_key}_base")
-            with c2:
-                exponent = st.text_input("Exponent", key=f"{target_key}_exponent")
-            if st.button(
-                "Potenz einsetzen",
-                key=f"{target_key}_power",
-                use_container_width=True,
-            ) and base.strip() and exponent.strip():
-                _append_math(buffer_key, f"({base.strip()})^({exponent.strip()})")
-                st.rerun()
-
-            st.markdown("**Wurzel**")
-            root_value = st.text_input(
-                "Ausdruck unter der Wurzel",
-                key=f"{target_key}_root",
-            )
-            if st.button(
-                "Wurzel einsetzen",
-                key=f"{target_key}_root_button",
-                use_container_width=True,
-            ) and root_value.strip():
-                _append_math(buffer_key, f"√({root_value.strip()})")
-                st.rerun()
+        _row(MORE_KEYS, "more", buffer_key, columns=4)
 
     combined = " ".join(
-        part for part in (manual_text.strip(), math_buffer.strip()) if part
+        part for part in (manual_text.strip(), math_text.strip()) if part
     ).strip()
 
     if combined:
@@ -180,28 +120,26 @@ def render_math_editor(
             send_label,
             type="primary",
             use_container_width=True,
-            disabled=not bool(combined),
+            disabled=(combined == ""),
             key=f"{target_key}_send",
         )
     with c2:
         st.button(
             "⌫ Mathe",
             use_container_width=True,
-            disabled=not bool(math_buffer),
+            disabled=(math_text == ""),
             key=f"{target_key}_delete_math",
-            on_click=_delete_math,
+            on_click=_delete,
             args=(buffer_key,),
         )
     with c3:
         st.button(
             "Mathe löschen",
             use_container_width=True,
-            disabled=not bool(math_buffer),
+            disabled=(math_text == ""),
             key=f"{target_key}_clear_math",
-            on_click=_clear_math,
+            on_click=_clear,
             args=(buffer_key,),
         )
 
-    if send:
-        return combined
-    return None
+    return combined if send else None

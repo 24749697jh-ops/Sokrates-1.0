@@ -1,4 +1,4 @@
-# Sokrates 1.1.4 – Teacher Engine 2.0 (iPad Edition)
+# Sokrates 1.1.5 – Teacher Engine 2.0 (iPad Edition)
 
 Sokrates 1.1 erweitert vor allem den fachlich-didaktischen Unterbau.
 Die Oberfläche bleibt bewusst weitgehend unverändert.
@@ -96,3 +96,13 @@ Diese Datei muss ebenfalls in das Hauptverzeichnis hochgeladen werden.
   durch spätere Schülerantworten versehentlich wechseln.
 - Die allererste Lehrerfrage wird direkt von der Teacher Engine erzeugt und
   nicht mehr frei vom Sprachmodell formuliert.
+
+
+## Korrekturen in 1.1.5
+
+- Die ursprüngliche Aufgabe bleibt oben dauerhaft sichtbar.
+- Eine sichtbare Versionsanzeige zeigt eindeutig, ob 1.1.5 wirklich deployed ist.
+- Die Texteingabe und die mathematische Ergänzung sind klar getrennt.
+- Der Senden-Button wird aktiv, sobald eines der beiden Felder Inhalt enthält.
+- Halbkreisaufgaben erhalten zwingend eine passende erste Frage.
+- Bei Kreis-, Radius- und Halbkreisaufgaben zeigt die Formelsammlung Geometrieformeln.
